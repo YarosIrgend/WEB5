@@ -1,3 +1,14 @@
+html{
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+body{
+    margin: 0;
+    height: 100vh;
+    width: 100%;
+}
+
 .right {
     display: grid;
     grid-template-rows: 20vh 1fr 20vh;
@@ -14,7 +25,7 @@ header {
     align-items: center;
 }
 
-header h1{
+header h1 {
     display: inline-block;
     position: relative;
     font-size: 50px;
@@ -32,10 +43,9 @@ footer {
     background-color: #339cff;
     align-items: center;
     justify-content: end;
-    height: 20vh;
 }
 
-footer h3{
+footer h3 {
     display: inline-block;
     position: relative;
     margin: 0;
@@ -71,4 +81,70 @@ footer h3{
 .left_bottom h1 {
     text-align: center;
     color: white;
+}
+
+@media (max-width: 1080px){
+    .container {
+        display: grid;
+        grid-template-columns: 30% 70%;
+        grid-template-rows: 10% auto 10% 10%;
+        grid-template-areas:
+        "header header"
+        "left_side main"
+        "left_bottom left_bottom"
+        "footer footer";
+        height: 100vh;
+    }
+
+    main{
+        margin-left: 10px;
+        font-size: 48px;
+        width: 100%;
+    }
+
+    .left_side {
+        background-color: #18cab4;
+        font-size: 48px;
+    }
+
+    .left_bottom {
+        display: grid;
+        background-color: #19ea82;
+        grid-area: left_bottom;
+        font-size: 30px;
+    }
+    .left_bottom ul {
+        list-style-type: none;
+        text-align: center;
+        display: flex;
+        padding: 0;
+        margin: 0 10px 0 10px;
+        justify-content: space-between;
+    }
+
+    .left_bottom h1 {
+        display: inline-block;
+        text-align: center;
+        color: white;
+        margin: 0;
+    }
+
+    header {
+        display: grid;
+        background-color: #339cff;
+        grid-template-columns: auto auto;
+        grid-area: header;
+    }
+    header h1 {
+        font-size: 64px;
+    }
+
+    footer {
+        background-color: #339cff;
+        grid-area: footer;
+    }
+    footer h3{
+        margin: 0;
+        text-align: right;
+    }
 }
