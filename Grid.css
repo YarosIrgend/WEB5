@@ -107,6 +107,9 @@ footer h3 {
         background-color: #18cab4;
         font-size: 36px;
     }
+    .left_side img{
+        width: 100%;
+    }
 
     .left_bottom {
         display: grid;
