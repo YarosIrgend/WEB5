@@ -22,6 +22,22 @@
                     consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
                     pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
                     laborum. БЛАБЛАБЛАБЛАБЛАБЛАБЛАБЛА.</p>
+                <div id="area"></div>
+
+                <form id="divisorsForm">
+                    <label>Введіть число: <input type="number" id="numberInput" min="1" required></label>
+                    <button type="button" onclick="findDivisors()">Знайти дільники</button>
+                </form>
+
+                <form id="alignmentForm">
+                    <label><input type="checkbox" id="alignLeftSide"> Вирівняти left-side</label><br>
+                    <label><input type="checkbox" id="alignHeader"> Вирівняти header</label>
+                </form>
+
+                <a href="#" onclick="addListElement()">Додати пункт у список</a>
+                <ul id="unorderedList"></ul>
+                <button onclick="saveList()">Зберегти список</button>
+                <button onclick="clearList()">Очистити список</button>
             </main>
 
             <footer>
@@ -54,3 +70,147 @@
         </div>
     </body>
 </html>
+
+
+<!--Зміна місцями блока 1 та 2-->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const headerText = document.querySelector("header h1");
+        const leftSideText = document.querySelector("aside.left_side p");
+
+        const headerContent = headerText.textContent;
+        const leftSideContent = leftSideText.textContent;
+
+        headerText.textContent = leftSideContent;
+        leftSideText.textContent = headerContent;
+    });
+</script>
+
+<!--Розрахунок площі овала-->
+<script>
+    function calculateOvalArea() {
+        const a = 5;
+        const b = 3;
+        const area = Math.PI * a * b;
+
+        const blockMain = document.getElementById("area");
+        const resultParagraph = document.createElement("p");
+        resultParagraph.textContent = `Площа овалу: ${area.toFixed(2)}`;
+        blockMain.appendChild(resultParagraph);
+    }
+
+    calculateOvalArea();
+</script>
+
+<!--Розрахунок дільників-->
+<script>
+    function findDivisors() {
+        const number = parseInt(document.getElementById("numberInput").value);
+        if (isNaN(number) || number < 1) {
+            alert("Будь ласка, введіть натуральне число.");
+            return;
+        }
+
+        let divisors = [];
+        for (let i = 1; i <= number; i++) {
+            if (number % i === 0) divisors.push(i);
+        }
+
+        alert(`Дільники числа ${number}: ${divisors.join(", ")}`);
+
+        // Збереження у cookies
+        document.cookie = `divisors=${divisors.join(", ")}; path=/; max-age=3600`;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const cookies = document.cookie.split("; ").find((row) => row.startsWith("divisors="));
+        if (cookies) {
+            const savedData = cookies.split("=")[1];
+            const deleteData = confirm(`Збережені дільники: ${savedData}. Видалити дані з cookies?`);
+
+            if (deleteData) {
+                document.cookie = "divisors=; path=/; max-age=0"; // Видалення cookies
+                location.reload();
+            } else {
+                alert("Дані збережено у cookies. Перезавантажте сторінку для оновлення.");
+                document.getElementById("divisorsForm").style.display = "none";
+            }
+        }
+    });
+</script>
+
+<!--Вирівняти об'єкти-->
+<script>
+    // Функція для застосування вирівнювання
+    function setAlignment() {
+        const alignLeftSide = document.getElementById("alignLeftSide").checked;
+        const alignHeader = document.getElementById("alignHeader").checked;
+
+        localStorage.setItem("alignLeftSide", alignLeftSide);
+        localStorage.setItem("alignHeader", alignHeader);
+
+        // Встановлюємо вирівнювання для блоків
+        const leftSide = document.querySelector(".left_side p");
+        const header = document.querySelector("header");
+
+        leftSide.style.textAlign = alignLeftSide ? "right" : "left";
+        header.style.textAlign = alignHeader ? "right" : "left";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        // Відновлюємо значення вирівнювання з localStorage
+        const alignLeftSide = JSON.parse(localStorage.getItem("alignLeftSide")) || false;
+        const alignHeader = JSON.parse(localStorage.getItem("alignHeader")) || false;
+
+        document.getElementById("alignLeftSide").checked = alignLeftSide;
+        document.getElementById("alignHeader").checked = alignHeader;
+
+        setAlignment(); // Встановлюємо вирівнювання при завантаженні сторінки
+    });
+
+    // Додаємо подію mouseover для зміни вирівнювання
+    document.querySelector(".left_side").addEventListener("mouseover", setAlignment);
+    document.querySelector("header").addEventListener("mouseover", setAlignment);
+
+    document.getElementById("alignmentForm").addEventListener("change", setAlignment);
+</script>
+
+<!--Додавання списку-->
+<script>
+    // Функція для додавання елемента в список
+    function addListElement() {
+        const list = document.getElementById("unorderedList");
+        const newItem = prompt("Введіть текст нового пункту:");
+        if (newItem) {
+            const li = document.createElement("li");
+            li.textContent = newItem;
+            list.appendChild(li);
+        }
+    }
+
+    // Функція для збереження списку в localStorage
+    function saveList() {
+        const list = Array.from(document.querySelectorAll("#unorderedList li")).map((li) => li.textContent);
+        localStorage.setItem("savedList", JSON.stringify(list));
+        alert("Список збережено!");
+    }
+
+    // Функція для очищення списку в localStorage
+    function clearList() {
+        localStorage.removeItem("savedList");
+        document.getElementById("unorderedList").innerHTML = "";
+        alert("Список очищено!");
+    }
+
+    // Завантаження збереженого списку з localStorage при відкритті сторінки
+    document.addEventListener("DOMContentLoaded", () => {
+        const savedList = JSON.parse(localStorage.getItem("savedList")) || [];
+        const list = document.getElementById("unorderedList");
+        savedList.forEach((item) => {
+            const li = document.createElement("li");
+            li.textContent = item;
+            list.appendChild(li);
+        });
+    });
+</script>
